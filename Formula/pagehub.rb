@@ -12,7 +12,7 @@ class Pagehub < Formula
     ldflags = "-s -w -X github.com/kuopenx/pagehub/internal/buildinfo.Version=#{version} " \
               "-X github.com/kuopenx/pagehub/internal/buildinfo.Commit=8da9d572f5a43ceae0553c5dc8d458fe042a3dcc"
     system "go", "build", *std_go_args(ldflags: ldflags), "./cmd/pagehub"
-    doc.install "README.md", "SECURITY.md", "THIRD_PARTY_NOTICES.md"
+    doc.install "README.md", "README.zh-CN.md", "SECURITY.md", "SECURITY.zh-CN.md", "THIRD_PARTY_NOTICES.md"
   end
 
   def caveats
