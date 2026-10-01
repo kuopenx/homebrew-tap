@@ -1,0 +1,40 @@
+name: Update Pagehub formula
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * *'
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Read latest published release
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! tag=$(gh release view --repo kuopenx/pagehub --json tagName --jq .tagName); then
+            echo 'No published release yet.'
+            exit 0
+          fi
+          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          source_url="https://github.com/kuopenx/pagehub/archive/refs/tags/$tag.tar.gz"
+          curl --fail --silent --show-error --location "$source_url" --output /tmp/pagehub-source.tar.gz
+          sha=$(sha256sum /tmp/pagehub-source.tar.gz | cut -d ' ' -f 1)
+          ref=$(gh api "repos/kuopenx/pagehub/git/ref/tags/$tag")
+          commit=$(printf '%s' "$ref" | jq -r .object.sha)
+          if test "$(printf '%s' "$ref" | jq -r .object.type)" = tag; then
+            commit=$(gh api "repos/kuopenx/pagehub/git/tags/$commit" --jq .object.sha)
+          fi
+          [[ "$commit" =~ ^[0-9a-f]{40}$ ]]
+          ruby -e 'p=ARGV[0]; s=File.read(p); s.sub!(/url ".*"/, "url \"#{ARGV[1]}\""); s.sub!(/sha256 ".*"/, "sha256 \"#{ARGV[2]}\""); s.sub!(/internal\/buildinfo.Commit=[0-9a-f]+/, "internal/buildinfo.Commit=#{ARGV[3]}"); File.write(p,s)' Formula/pagehub.rb "$source_url" "$sha" "$commit"
+          ruby -c Formula/pagehub.rb
+          if git diff --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Formula/pagehub.rb
+          git commit -m "Update Pagehub to $tag"
+          git push
