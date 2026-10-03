@@ -1,8 +1,8 @@
 class Pagehub < Formula
   desc "Single-binary LAN HTML artifact hosting with a local MCP interface"
   homepage "https://github.com/kuopenx/pagehub"
-  url "https://github.com/kuopenx/pagehub/archive/refs/tags/v0.5.1.tar.gz"
-  sha256 "0ba6b21583bf6c09941bb2be3a127e5dc209fccc441c9e16238ac7feace75b3a"
+  url "https://github.com/kuopenx/pagehub/archive/refs/tags/v0.5.2.tar.gz"
+  sha256 "b9c725dcec52a4886afcc1376ddd4be6333fe6fdbf3ee229b438b5e2d2298e3a"
   license "MIT"
 
   depends_on "go" => :build
@@ -10,7 +10,7 @@ class Pagehub < Formula
   def install
     ENV["CGO_ENABLED"] = "0"
     ldflags = "-s -w -X github.com/kuopenx/pagehub/internal/buildinfo.Version=#{version} " \
-              "-X github.com/kuopenx/pagehub/internal/buildinfo.Commit=fd0c6552749a12e1c3cbe1cb117196b3abe183ff"
+              "-X github.com/kuopenx/pagehub/internal/buildinfo.Commit=b55c2c285367ec1843490355cf6619a4390fa514"
     system "go", "build", *std_go_args(ldflags: ldflags), "./cmd/pagehub"
     doc.install "README.md", "README.zh-CN.md", "SECURITY.md", "SECURITY.zh-CN.md", "THIRD_PARTY_NOTICES.md"
   end
