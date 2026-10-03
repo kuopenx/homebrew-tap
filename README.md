@@ -20,6 +20,6 @@ pagehub setup
 pagehub doctor
 ```
 
-See [Pagehub](https://github.com/kuopenx/pagehub) for other source installation methods, usage, and security boundaries. macOS background services are installed by `pagehub setup`, not by Homebrew services.
+See [Pagehub](https://github.com/kuopenx/pagehub) for other source installation methods, usage, and security boundaries. Background services are installed by `pagehub setup`, not by Homebrew services. Pagehub supports macOS user LaunchAgents and Linux user systemd services (systemd 240+ with an active user manager). Linux autostart is on login; enable linger explicitly if you need startup before login. See the main repository for Linux source installation.
 
 The formula updater checks the latest published source Release daily. Maintainers can also run the **Update Pagehub formula** workflow manually. It uses only this tap's GitHub token; no cross-repository secret is needed. Source SHA256 and the tagged commit are updated together. Release binaries and Apple signing are not used.

@@ -17,7 +17,7 @@ class Pagehub < Formula
 
   def caveats
     <<~EOS
-      macOS background setup (no root):
+      macOS/Linux background setup (no root):
         pagehub setup
         pagehub connect codex  # or claude
         pagehub doctor
@@ -25,7 +25,8 @@ class Pagehub < Formula
 
       After upgrading, run `pagehub setup` to update the managed background binary.
       Use Pagehub's service commands; do not register a second Homebrew service.
-      Linux supports `pagehub serve`; background management is macOS-only.
+      Linux requires an active systemd user manager (systemd 240+).
+      Autostart is on login; use loginctl enable-linger explicitly for boot without login.
     EOS
   end
 
